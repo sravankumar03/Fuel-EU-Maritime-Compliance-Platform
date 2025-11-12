@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Route {
+  id            String   @id @default(uuid())
+  routeId       String   @unique
+  vesselType    String
+  fuelType      String
+  year          Int
+  ghgIntensity  Float
+  fuelConsumption Float
+  distance      Float
+  totalEmissions Float
+  isBaseline    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([vesselType])
+  @@index([fuelType])
+  @@index([year])
+}
+
+model ShipCompliance {
+  id            String   @id @default(uuid())
+  shipId        String
+  year          Int
+  targetIntensity Float  @default(89.3368)
+  actualIntensity Float
+  energyInScope Float
+  complianceBalance Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([shipId, year])
+  @@index([shipId])
+  @@index([year])
+}
+
+model BankEntry {
+  id            String   @id @default(uuid())
+  shipId        String
+  year          Int
+  cbAmount      Float
+  entryType     String   // 'BANK' or 'APPLY'
+  description   String?
+  createdAt     DateTime @default(now())
+
+  @@index([shipId])
+  @@index([year])
+}
+
+model Pool {
+  id            String   @id @default(uuid())
+  name          String?
+  year          Int
+  createdAt     DateTime @default(now())
+
+  members       PoolMember[]
+
+  @@index([year])
+}
+
+model PoolMember {
+  id            String   @id @default(uuid())
+  poolId        String
+  shipId        String
+  cbBefore      Float
+  cbAfter       Float
+  createdAt     DateTime @default(now())
+
+  pool          Pool     @relation(fields: [poolId], references: [id], onDelete: Cascade)
+
+  @@index([poolId])
+  @@index([shipId])
+}
+
