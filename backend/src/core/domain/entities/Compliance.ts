@@ -9,7 +9,7 @@ export interface ComplianceBalance {
 
 export interface ComplianceCalculation {
   fuelConsumption: number; // tonnes
-  targetIntensity: number; // gCO2e/MJ (default: 89.3368 for 2025)
+  targetIntensity?: number; // gCO2e/MJ (default: 89.3368 for 2025)
   actualIntensity: number; // gCO2e/MJ
 }
 

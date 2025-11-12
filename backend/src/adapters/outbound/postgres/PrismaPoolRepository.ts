@@ -55,7 +55,7 @@ export class PrismaPoolRepository implements PoolRepository {
       name: prismaPool.name || undefined,
       year: prismaPool.year,
       createdAt: prismaPool.createdAt,
-      members: prismaPool.members.map(this.memberToDomain),
+      members: (prismaPool.members || []).map(this.memberToDomain),
     };
   }
 
